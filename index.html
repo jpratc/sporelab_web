@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SporeLab — Where Tech Grows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#05080A;--bg2:#090e10;--g:#2DFFA0;--teal:#00D4C8;--amber:#F5A623;--dim:#152820;--text:#cce8d8;--muted:#4a7060;--glow:0 0 18px rgba(45,255,160,.4),0 0 50px rgba(45,255,160,.12);--glow-sm:0 0 10px rgba(45,255,160,.35)}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden}
+  #cur{display:none}#ring{display:none}
+  #bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:500;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.025}
+  nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:linear-gradient(to bottom,rgba(5,8,10,.96) 60%,transparent);backdrop-filter:blur(4px)}
+  .nav-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+  .wm{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.4rem;color:var(--g);letter-spacing:.04em;text-shadow:var(--glow-sm)}
+  .wm span{font-style:normal;font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted)}
+  nav ul{list-style:none;display:flex;gap:2.2rem}
+  nav ul a{color:var(--muted);text-decoration:none;font-size:.72rem;font-family:'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;transition:color .25s;position:relative}
+  nav ul a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--g);transition:width .25s;box-shadow:var(--glow-sm)}
+  nav ul a:hover{color:var(--g)} nav ul a:hover::after{width:100%}
+  .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 2rem 4rem}
+  .hero-eyebrow{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.3em;color:var(--teal);text-transform:uppercase;margin-bottom:1.4rem;opacity:0;animation:fadeUp .8s .3s forwards}
+  .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3.2rem,9vw,7.5rem);font-weight:600;line-height:.94;letter-spacing:-.02em;margin-bottom:.3em;opacity:0;animation:fadeUp .9s .5s forwards}
+  .hero-title .l1{color:var(--text);display:block}
+  .hero-title .l2{color:var(--g);font-style:italic;display:block;text-shadow:var(--glow)}
+  .hero-sub{font-size:clamp(.9rem,1.8vw,1.1rem);color:var(--muted);max-width:520px;line-height:1.75;margin:1.4rem auto 2.4rem;opacity:0;animation:fadeUp .9s .7s forwards}
+  .hero-sub strong{color:var(--g)}
+  .hero-cta{display:inline-flex;gap:.9rem;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp .9s .9s forwards}
+  .logo-float{margin-bottom:2.2rem;opacity:0;animation:fadeIn 1.2s .1s forwards}
+  .logo-float svg{animation:float 6s ease-in-out infinite}
+  .btn-p{background:var(--g);color:var(--bg);border:none;padding:.85rem 2rem;font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:box-shadow .3s,transform .2s;clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%)}
+  .btn-p:hover{box-shadow:var(--glow);transform:translateY(-2px)}
+  .btn-g{border:1px solid var(--dim);color:var(--muted);padding:.85rem 2rem;font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:border-color .3s,color .3s;clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%)}
+  .btn-g:hover{border-color:var(--g);color:var(--g)}
+  section{position:relative;z-index:1;padding:7rem 3rem}
+  .lbl{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;color:var(--teal);margin-bottom:.9rem}
+  .stitle{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;margin-bottom:1.4rem}
+  .sep{max-width:1100px;margin:0 auto;height:1px;background:linear-gradient(to right,transparent,var(--dim),transparent)}
+  .divider{width:50px;height:1px;background:linear-gradient(to right,var(--g),transparent);margin:0 auto 2.8rem;box-shadow:var(--glow-sm)}
+  .about-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
+  .term{background:var(--bg2);border:1px solid var(--dim);padding:1.4rem;font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);line-height:2.1}
+  .term .g{color:var(--g)} .term .t{color:var(--teal)} .term .w{color:var(--text)} .term .a{color:var(--amber)}
+  .tag-grid{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.9rem}
+  .tag{border:1px solid var(--dim);color:var(--muted);padding:.25rem .8rem;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.07em;transition:border-color .3s,color .3s,box-shadow .3s}
+  .tag:hover{border-color:var(--g);color:var(--g);box-shadow:var(--glow-sm)}
+  .project-card{max-width:680px;margin:3rem auto 0;background:var(--bg2);border:1px solid var(--dim);padding:3rem;position:relative;overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s}
+  .project-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--g),transparent)}
+  .project-card:hover{border-color:rgba(45,255,160,.3);transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+  .project-card h3{font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:.6rem;font-style:italic}
+  .project-card p{font-size:.9rem;color:var(--muted);line-height:1.8;margin-bottom:1.2rem}
+  .corner-glyph{position:absolute;top:1.5rem;right:1.8rem;font-family:'Space Mono',monospace;font-size:.6rem;color:var(--dim);letter-spacing:.1em}
+  .game-wrap{max-width:820px;margin:2.5rem auto 0;background:var(--bg2);border:1px solid var(--dim);padding:1.8rem;position:relative}
+  .game-wrap::before{content:'';position:absolute;inset:-1px;pointer-events:none;background:linear-gradient(135deg,rgba(45,255,160,.08),transparent 50%,rgba(0,212,200,.06))}
+  #gc{display:block;margin:0 auto;background:#020608;border:1px solid var(--dim);cursor:pointer;max-width:100%}
+  .game-hud{display:flex;justify-content:space-between;align-items:center;margin-top:.8rem;font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted)}
+  .hud-val{color:var(--g);font-size:1rem;font-weight:700;text-shadow:var(--glow-sm)}
+  #gbtn{background:transparent;border:1px solid var(--g);color:var(--g);padding:.5rem 1.6rem;font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .3s,box-shadow .3s}
+  #gbtn:hover{background:rgba(45,255,160,.1);box-shadow:var(--glow-sm)}
+  .game-hint{margin-top:.7rem;font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);text-align:center;letter-spacing:.06em}
+  .team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.2rem;margin-top:2.8rem}
+  .tcard{background:var(--bg2);border:1px solid var(--dim);padding:1.4rem 1rem;text-align:center;transition:border-color .3s}
+  .tcard:hover{border-color:rgba(45,255,160,.3)}
+  .av{width:52px;height:52px;border-radius:50%;background:var(--dim);border:1px solid rgba(45,255,160,.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto .8rem}
+  .tcard h4{font-size:.85rem;font-weight:700;margin-bottom:.2rem}
+  .tcard .role{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--teal);letter-spacing:.1em;text-transform:uppercase}
+  footer{position:relative;z-index:1;border-top:1px solid var(--dim);padding:2.5rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+  .fl{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;color:var(--g);text-shadow:var(--glow-sm)}
+  .fr{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.08em}
+  .fr a{color:var(--muted);text-decoration:none;transition:color .3s} .fr a:hover{color:var(--g)}
+  /* CONTACT FORM */
+  .contact-form{display:flex;flex-direction:column;gap:.8rem;text-align:left}
+  .contact-form input,.contact-form textarea{background:var(--bg2);border:1px solid var(--dim);color:var(--text);padding:.85rem 1rem;font-family:'Space Mono',monospace;font-size:.75rem;outline:none;transition:border-color .3s;resize:vertical}
+  .contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--muted);opacity:.6}
+  .contact-form input:focus,.contact-form textarea:focus{border-color:rgba(45,255,160,.4)}
+  .contact-form button:hover{box-shadow:var(--glow);transform:translateY(-2px)}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  @keyframes revealFallback{to{opacity:1;transform:translateY(0)}}
+  .reveal{animation:revealFallback 0s 1.5s forwards}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+  @media(max-width:760px){nav ul{display:none} nav{padding:1rem 1.4rem} section{padding:5rem 1.4rem} .about-grid{grid-template-columns:1fr;gap:2.5rem} footer{flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="ring"></div><canvas id="bg"></canvas>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="14.5" fill="none" stroke="#2DFFA0" stroke-width="1.3"/>
+      <circle cx="10" cy="12" r="2.8" fill="#2DFFA0" opacity=".85"/>
+      <circle cx="20" cy="10" r="1.6" fill="#2DFFA0" opacity=".6"/>
+      <circle cx="16" cy="19" r="3.5" fill="#2DFFA0" opacity=".7"/>
+      <circle cx="23" cy="18" r="2" fill="#2DFFA0" opacity=".5"/>
+      <circle cx="8" cy="21" r="1.3" fill="#2DFFA0" opacity=".45"/>
+      <circle cx="19" cy="24" r="1" fill="#2DFFA0" opacity=".35"/>
+    </svg>
+    <div><div class="wm">SporeLab<span>.xyz</span></div></div>
+  </a>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#game">Play</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="logo-float">
+    <svg width="130" height="130" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 24px rgba(45,255,160,.4))">
+      <circle cx="30" cy="30" r="27" fill="none" stroke="#2DFFA0" stroke-width="1.4"/>
+      <circle cx="30" cy="30" r="25" fill="none" stroke="rgba(45,255,160,.15)" stroke-width=".6"/>
+      <circle cx="19" cy="22" r="5" fill="#2DFFA0" opacity=".8"/>
+      <circle cx="35" cy="18" r="3" fill="#2DFFA0" opacity=".55"/>
+      <circle cx="28" cy="34" r="6.5" fill="#2DFFA0" opacity=".65"/>
+      <circle cx="42" cy="30" r="3.8" fill="#2DFFA0" opacity=".5"/>
+      <circle cx="15" cy="36" r="2.5" fill="#2DFFA0" opacity=".4"/>
+      <circle cx="38" cy="42" r="2" fill="#2DFFA0" opacity=".35"/>
+      <circle cx="22" cy="44" r="1.5" fill="#2DFFA0" opacity=".3"/>
+      <circle cx="44" cy="20" r="1.2" fill="#2DFFA0" opacity=".3"/>
+    </svg>
+  </div>
+  <p class="hero-eyebrow">Catalunya · Growing in the Dark</p>
+  <h1 class="hero-title"><span class="l1">Where Tech</span><span class="l2">Grows Wild</span></h1>
+  <p class="hero-sub">A collective of Catalan developers, physicists &amp; curious minds — building experiments, tools and playful things. Like spores, our ideas <strong>spread into unexpected places</strong>.</p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn-p">Explore the Lab</a>
+    <a href="#game" class="btn-g">Play a Game ↓</a>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section id="about">
+  <div class="about-grid">
+    <div class="reveal">
+      <p class="lbl">// about.us</p>
+      <h2 class="stitle">A lab that<br><em style="color:var(--g)">never stops</em><br>experimenting</h2>
+      <p style="color:var(--muted);line-height:1.85;margin-bottom:1.2rem;font-size:.93rem">We are <strong style="color:var(--g)">SporeLab</strong> — a small, chaotic, brilliant team from Catalunya. We build at the intersection of hard science, software and playful engineering.</p>
+      <p style="color:var(--muted);line-height:1.85;margin-bottom:1.2rem;font-size:.93rem">The name is intentional. Spores don't wait for permission to grow. They drift, land somewhere unexpected, and <strong style="color:var(--g)">flourish in surprising conditions</strong>. That's how we work.</p>
+      <p style="color:var(--muted);line-height:1.85;margin-bottom:1.2rem;font-size:.93rem">Everything we build is open to explore. Some things are useful. Some are just beautiful. All of them started with a question we couldn't stop asking.</p>
+    </div>
+    <div class="reveal" style="display:flex;flex-direction:column;gap:1rem">
+      <div class="term">
+        <span class="g">sporelab@xyz</span><span style="color:var(--muted)">:~$ whoami</span><br>
+        <span class="t">▸</span> discipline: <span class="w">physics · software · design</span><br>
+        <span class="t">▸</span> base: <span class="w">Catalunya 🌹</span><br>
+        <span class="t">▸</span> mode: <span class="w">always in beta</span><br>
+        <span class="t">▸</span> coffee: <span class="a">critical levels</span><br>
+        <span class="t">▸</span> curiosity: <span class="g">█████████░ OVERFLOW</span>
+      </div>
+      <div class="tag-grid">
+        <span class="tag">WebDev</span><span class="tag">Simulation</span><span class="tag">Generative Art</span>
+        <span class="tag">ML · AI</span><span class="tag">Game Dev</span><span class="tag">Data Viz</span>
+        <span class="tag">Open Hardware</span><span class="tag">Quantum Stuff</span>
+        <span class="tag">Open Source</span><span class="tag">Always Beta</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section id="projects">
+  <div style="max-width:1100px;margin:0 auto;text-align:center">
+    <p class="lbl reveal">// lab.projects</p>
+    <h2 class="stitle reveal">Growing<br><em style="color:var(--g)">right now</em></h2>
+    <div class="divider"></div>
+    <div class="project-card reveal">
+      <span class="corner-glyph">01 ──</span>
+      <h3>Interactive Travel Planner</h3>
+      <p>A Gantt chart organizer for your trips — plan, visualize, and coordinate every leg of your journey on an interactive timeline. Real-time updated and sharable with your travel crew.</p>
+      <span style="display:inline-block;border:1px solid rgba(245,166,35,.4);color:var(--amber);padding:.35rem 1rem;font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;opacity:.85">◈ Coming Soon</span>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section id="game">
+  <div style="max-width:820px;margin:0 auto;text-align:center">
+    <p class="lbl reveal">// play.sh</p>
+    <h2 class="stitle reveal">Spore <em style="color:var(--g);font-style:italic">Pulse</em></h2>
+    <p style="color:var(--muted);max-width:500px;margin:0 auto;font-size:.88rem;line-height:1.75" class="reveal">Tap when the ring hits the target. Perfect timing = big points. Chain hits for combos. How far can you go?</p>
+    <div class="game-wrap reveal">
+      <canvas id="gc" width="400" height="400"></canvas>
+      <div class="game-hud">
+        <span>SCORE <span class="hud-val" id="gsc">0</span></span>
+        <button id="gbtn" onclick="gameStart()">▶ PLAY</button>
+        <span>BEST <span class="hud-val" id="gbs">0</span></span>
+      </div>
+      <p class="game-hint">CLICK / TAP / SPACE — that's it</p>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section id="team">
+  <div style="max-width:900px;margin:0 auto;text-align:center">
+    <p class="lbl reveal">// team.json</p>
+    <h2 class="stitle reveal">The <em style="color:var(--g)">Colony</em></h2>
+    <div class="divider"></div>
+    <div class="team-grid">
+      <div class="tcard reveal"><div class="av">⚛️</div><h4>Jordi</h4><div class="role">Physics · Founder</div></div>
+      <div class="tcard reveal"><div class="av">⚡</div><h4>Marc</h4><div class="role">Engineer · Founder</div></div>
+      <div class="tcard reveal"><div class="av">🧫</div><h4>Cris</h4><div class="role">Petri Dish Cook · Founder</div></div>
+      <div class="tcard reveal" style="border-style:dashed"><div class="av" style="border-style:dashed">?</div><h4>You?</h4><div class="role">Join the Lab</div></div>
+    </div>
+    <p style="margin-top:2.8rem;color:var(--muted);font-size:.85rem;line-height:2">
+      We work in the open, in public, from Catalunya.
+    </p>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section id="contact">
+  <div style="max-width:560px;margin:0 auto;text-align:center">
+    <p class="lbl reveal">// contact.send</p>
+    <h2 class="stitle reveal">Get in <em style="color:var(--g)">Touch</em></h2>
+    <div class="divider"></div>
+    <p style="color:var(--muted);font-size:.88rem;line-height:1.75;margin-bottom:2rem" class="reveal">Got an idea, a question, or just want to say hi? Drop us a message.</p>
+    <form class="contact-form reveal" action="https://formspree.io/f/mpqyezwz" method="POST">
+      <input type="text" name="name" placeholder="Your name" required>
+      <input type="email" name="email" placeholder="Your email" required>
+      <textarea name="message" placeholder="Your message..." rows="5" required></textarea>
+      <button type="submit" class="btn-p" style="width:100%;text-align:center;border:none">Send Message</button>
+    </form>
+    <p id="form-status" style="margin-top:1rem;font-family:'Space Mono',monospace;font-size:.7rem;color:var(--teal);display:none"></p>
+  </div>
+</section>
+
+<footer>
+  <div class="fl">SporeLab.xyz</div>
+  <div class="fr">Built in Catalunya &nbsp;·&nbsp; <a href="#contact">Contact</a> &nbsp;·&nbsp; © 2025</div>
+</footer>
+
+<script>
+// CONTACT FORM (Formspree AJAX)
+var cForm=document.querySelector('.contact-form');
+if(cForm)cForm.addEventListener('submit',function(e){
+  e.preventDefault();
+  var status=document.getElementById('form-status');
+  var btn=cForm.querySelector('button[type="submit"]');
+  btn.textContent='Sending...';btn.disabled=true;
+  fetch(cForm.action,{method:'POST',body:new FormData(cForm),headers:{'Accept':'application/json'}})
+  .then(function(r){
+    if(r.ok){status.textContent='Message sent! We\'ll get back to you.';status.style.display='block';status.style.color='var(--g)';cForm.reset();}
+    else{status.textContent='Something went wrong. Try again.';status.style.display='block';status.style.color='#ff5050';}
+    btn.textContent='Send Message';btn.disabled=false;
+  }).catch(function(){
+    status.textContent='Network error. Please try again.';status.style.display='block';status.style.color='#ff5050';
+    btn.textContent='Send Message';btn.disabled=false;
+  });
+});
+
+// BG
+var bgC=document.getElementById('bg'),bgX=bgC.getContext('2d');
+function resizeBg(){bgC.width=innerWidth;bgC.height=innerHeight}resizeBg();addEventListener('resize',resizeBg);
+function Mote(){this.x=Math.random()*bgC.width;this.y=Math.random()*bgC.height;this.r=Math.random()*2+.4;this.vy=-(Math.random()*.35+.08);this.vx=(Math.random()-.5)*.25;this.ph=Math.random()*Math.PI*2;this.c=Math.random()>.5?'45,255,160':'0,212,200';}
+Mote.prototype.update=function(){this.y+=this.vy;this.x+=this.vx;this.ph+=.018;if(this.y<-8){this.x=Math.random()*bgC.width;this.y=bgC.height+8;this.r=Math.random()*2+.4;}};
+Mote.prototype.draw=function(){var a=.15+Math.sin(this.ph)*.2;bgX.beginPath();bgX.arc(this.x,this.y,this.r,0,Math.PI*2);bgX.fillStyle='rgba('+this.c+','+a+')';bgX.shadowBlur=6;bgX.shadowColor='rgba('+this.c+',.4)';bgX.fill();};
+var motes=[];for(var i=0;i<100;i++)motes.push(new Mote());
+(function animBg(){bgX.clearRect(0,0,bgC.width,bgC.height);motes.forEach(function(m){m.update();m.draw();});bgX.shadowBlur=0;requestAnimationFrame(animBg);})();
+
+// REVEAL
+var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in');});},{threshold:0.05,rootMargin:'50px'});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
+setTimeout(function(){document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});},1200);
+
+
+// GAME — SPORE PULSE
+var GC=document.getElementById('gc'),CTX=GC.getContext('2d');
+var W=GC.width,H=GC.height,CX=W/2,CY=H/2;
+var running=false,score=0,best=0,lives=3,combo=0,round=0;
+var ring=null,targets=[],sparks=[],texts=[],particles=[];
+var speed=1.8,baseTargetR=120,waiting=false,waitT=0;
+
+function nextRound(){
+  round++;
+  // speed ramps up, target zone shrinks
+  speed=1.8+round*0.12;
+  var numTargets=Math.min(1+Math.floor(round/8),4);
+  targets=[];
+  for(var i=0;i<numTargets;i++){
+    var r=50+Math.random()*(CX-70);
+    var thickness=Math.max(6,22-round*0.6);
+    var hue=Math.random();
+    var col=hue<0.33?'#2DFFA0':hue<0.66?'#00D4C8':'#F5A623';
+    targets.push({r:r,thickness:thickness,color:col,hit:false,alpha:1});
+  }
+  targets.sort(function(a,b){return a.r-b.r;});
+  ring={r:0,speed:speed,active:true};
+}
+
+function checkHit(){
+  if(!ring||!ring.active)return;
+  var bestDist=999,bestIdx=-1;
+  for(var i=0;i<targets.length;i++){
+    if(targets[i].hit)continue;
+    var dist=Math.abs(ring.r-targets[i].r);
+    if(dist<targets[i].thickness+8&&dist<bestDist){bestDist=dist;bestIdx=i;}
+  }
+  if(bestIdx>=0){
+    var t=targets[bestIdx];
+    t.hit=true;
+    // scoring based on precision
+    var precision=1-bestDist/(t.thickness+8);
+    var perfect=precision>0.8;
+    var good=precision>0.4;
+    combo++;
+    var pts=perfect?50:good?25:10;
+    pts*=Math.min(combo,10);
+    score+=pts;
+    document.getElementById('gsc').textContent=score;
+    // visual feedback
+    var label=perfect?'PERFECT':good?'GOOD':'OK';
+    var col=perfect?'#F5A623':good?'#2DFFA0':'#00D4C8';
+    texts.push({text:label+(combo>1?' ×'+combo:''),x:CX,y:CY-t.r-20,alpha:1.5,color:col,size:perfect?18:14});
+    spawnRingSparks(t.r,col,perfect?20:10);
+    // check if all targets hit
+    var allHit=targets.every(function(tt){return tt.hit;});
+    if(allHit){ring.active=false;waiting=true;waitT=30;}
+  }else{
+    // miss
+    combo=0;lives--;
+    texts.push({text:'MISS',x:CX,y:CY-40,alpha:1.5,color:'#ff5050',size:16});
+    ring.active=false;waiting=true;waitT=40;
+    // screen shake via sparks
+    for(var j=0;j<8;j++)sparks.push({x:CX+Math.random()*60-30,y:CY+Math.random()*60-30,
+      vx:(Math.random()-.5)*3,vy:(Math.random()-.5)*3,life:0.8,color:'#ff5050',r:2});
+    if(lives<=0){endGame();return;}
+  }
+}
+
+function missedAllTargets(){
+  // ring went past all targets without being tapped
+  combo=0;lives--;
+  texts.push({text:'TOO SLOW',x:CX,y:CY-40,alpha:1.5,color:'#ff5050',size:14});
+  ring.active=false;waiting=true;waitT=40;
+  if(lives<=0){endGame();return;}
+}
+
+function spawnRingSparks(radius,color,n){
+  for(var i=0;i<n;i++){
+    var a=Math.random()*Math.PI*2;
+    var px=CX+Math.cos(a)*radius,py=CY+Math.sin(a)*radius;
+    var s=Math.random()*2+1;
+    sparks.push({x:px,y:py,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1,color:color,r:Math.random()*2.5+.5});
+  }
+}
+
+function drawBackground(){
+  CTX.fillStyle='#020608';CTX.fillRect(0,0,W,H);
+  // subtle concentric rings for depth
+  CTX.save();
+  for(var r=30;r<CX;r+=30){
+    CTX.beginPath();CTX.arc(CX,CY,r,0,Math.PI*2);
+    CTX.strokeStyle='rgba(45,255,160,.03)';CTX.lineWidth=0.5;CTX.stroke();
+  }
+  CTX.restore();
+}
+
+function drawCenter(){
+  var t=Date.now()/1000;
+  CTX.save();
+  CTX.beginPath();CTX.arc(CX,CY,8+Math.sin(t*3)*2,0,Math.PI*2);
+  CTX.fillStyle='rgba(45,255,160,.1)';CTX.fill();
+  CTX.beginPath();CTX.arc(CX,CY,4,0,Math.PI*2);
+  CTX.fillStyle='#2DFFA0';CTX.shadowBlur=12;CTX.shadowColor='rgba(45,255,160,.6)';CTX.fill();
+  CTX.restore();
+}
+
+function drawTargets(){
+  targets.forEach(function(t){
+    if(t.hit){t.alpha=Math.max(0,t.alpha-0.03);if(t.alpha<=0)return;}
+    CTX.save();CTX.globalAlpha=t.hit?t.alpha*0.3:t.alpha*0.6;
+    CTX.beginPath();CTX.arc(CX,CY,t.r,0,Math.PI*2);
+    CTX.strokeStyle=t.color;CTX.lineWidth=t.thickness;
+    CTX.shadowBlur=t.hit?0:8;CTX.shadowColor=t.color;
+    CTX.stroke();CTX.restore();
+  });
+}
+
+function drawRing(){
+  if(!ring||!ring.active)return;
+  var alpha=0.8;
+  // fade if past all targets
+  var maxT=targets.length?Math.max.apply(null,targets.map(function(t){return t.r;}))+40:CX;
+  if(ring.r>maxT)alpha*=Math.max(0,1-(ring.r-maxT)/30);
+  CTX.save();CTX.globalAlpha=alpha;
+  CTX.beginPath();CTX.arc(CX,CY,ring.r,0,Math.PI*2);
+  CTX.strokeStyle='#2DFFA0';CTX.lineWidth=2.5;
+  CTX.shadowBlur=14;CTX.shadowColor='rgba(45,255,160,.7)';
+  CTX.stroke();CTX.restore();
+}
+
+function drawLives(){
+  CTX.save();CTX.font='10px "Space Mono",monospace';
+  for(var i=0;i<3;i++){
+    CTX.fillStyle=i<lives?'#2DFFA0':'rgba(45,255,160,.15)';
+    CTX.shadowBlur=i<lives?4:0;CTX.shadowColor='rgba(45,255,160,.5)';
+    CTX.beginPath();CTX.arc(18+i*18,18,5,0,Math.PI*2);CTX.fill();
+  }
+  // combo
+  if(combo>1){
+    CTX.font='bold 11px "Space Mono",monospace';CTX.textAlign='right';
+    CTX.fillStyle='rgba(245,166,35,.6)';CTX.shadowBlur=0;
+    CTX.fillText('×'+combo,W-12,20);
+  }
+  // round
+  CTX.font='9px "Space Mono",monospace';CTX.textAlign='center';
+  CTX.fillStyle='rgba(45,255,160,.25)';CTX.shadowBlur=0;
+  CTX.fillText('ROUND '+round,CX,16);
+  CTX.restore();
+}
+
+function drawTexts(){
+  texts=texts.filter(function(t){return t.alpha>0;});
+  texts.forEach(function(t){
+    t.y-=0.8;t.alpha-=0.025;
+    CTX.save();CTX.globalAlpha=Math.min(1,t.alpha);
+    CTX.font='bold '+t.size+'px "Cormorant Garamond",serif';
+    CTX.textAlign='center';CTX.fillStyle=t.color;
+    CTX.shadowBlur=10;CTX.shadowColor=t.color;
+    CTX.fillText(t.text,t.x,t.y);CTX.restore();
+  });
+}
+
+function drawSparks(){
+  sparks=sparks.filter(function(s){return s.life>0;});
+  sparks.forEach(function(s){
+    s.x+=s.vx;s.y+=s.vy;s.life-=0.025;
+    CTX.save();CTX.globalAlpha=s.life;CTX.fillStyle=s.color;
+    CTX.shadowBlur=3;CTX.shadowColor=s.color;
+    CTX.beginPath();CTX.arc(s.x,s.y,s.r,0,Math.PI*2);CTX.fill();CTX.restore();
+  });
+}
+
+// ambient floating particles
+function drawParticles(){
+  if(particles.length<30&&Math.random()<0.1){
+    var a=Math.random()*Math.PI*2,r=Math.random()*CX;
+    particles.push({x:CX+Math.cos(a)*r,y:CY+Math.sin(a)*r,
+      vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+      life:1+Math.random(),r:Math.random()*1.5+.3,
+      c:Math.random()>.5?'45,255,160':'0,212,200'});
+  }
+  particles=particles.filter(function(p){return p.life>0;});
+  particles.forEach(function(p){
+    p.x+=p.vx;p.y+=p.vy;p.life-=0.005;
+    CTX.save();CTX.globalAlpha=Math.min(p.life,0.2);
+    CTX.fillStyle='rgba('+p.c+',1)';
+    CTX.beginPath();CTX.arc(p.x,p.y,p.r,0,Math.PI*2);CTX.fill();CTX.restore();
+  });
+}
+
+function tick(){
+  if(!running)return;
+  CTX.clearRect(0,0,W,H);
+  drawBackground();drawParticles();drawTargets();drawCenter();drawRing();drawLives();drawTexts();drawSparks();
+
+  if(waiting){
+    waitT--;
+    if(waitT<=0){waiting=false;nextRound();}
+  }else if(ring&&ring.active){
+    ring.r+=ring.speed;
+    // check if ring passed all targets
+    var maxT=targets.length?Math.max.apply(null,targets.map(function(t){return t.r;}))+40:CX;
+    if(ring.r>maxT+30){
+      // did we miss any?
+      var missed=targets.some(function(t){return!t.hit;});
+      if(missed)missedAllTargets();
+      else{ring.active=false;waiting=true;waitT=20;}
+    }
+  }
+
+  if(running)requestAnimationFrame(tick);
+}
+
+function gameStart(){
+  score=0;lives=3;combo=0;round=0;speed=1.8;
+  sparks=[];texts=[];targets=[];ring=null;waiting=false;
+  running=true;gameOver=false;
+  document.getElementById('gsc').textContent=0;
+  document.getElementById('gbtn').textContent='\u21ba RESTART';
+  nextRound();
+  requestAnimationFrame(tick);
+}
+
+var gameOver=false;
+function endGame(){
+  gameOver=true;running=false;
+  if(score>best){best=score;document.getElementById('gbs').textContent=best;}
+  // draw game over
+  CTX.save();CTX.fillStyle='rgba(5,8,10,.6)';CTX.fillRect(0,0,W,H);
+  CTX.textAlign='center';
+  CTX.font='italic 28px "Cormorant Garamond",serif';
+  CTX.fillStyle='rgba(255,110,110,.9)';CTX.shadowBlur=16;CTX.shadowColor='rgba(255,60,60,.5)';
+  CTX.fillText('Colony Lost',CX,CY-20);
+  CTX.font='12px "Space Mono",monospace';CTX.fillStyle='#4a7060';CTX.shadowBlur=0;
+  CTX.fillText('Score: '+score+'  \u00b7  Round: '+round,CX,CY+8);
+  CTX.font='10px "Space Mono",monospace';CTX.fillStyle='#3a5a4a';
+  CTX.fillText('Press RESTART to try again',CX,CY+28);
+  CTX.restore();
+}
+
+// idle
+(function idle(){
+  if(running)return;
+  CTX.clearRect(0,0,W,H);
+  drawBackground();
+  // draw pulsing demo ring
+  var t=Date.now()/1000;
+  var demoR=(t*40)%CX;
+  CTX.save();CTX.globalAlpha=0.15*(1-demoR/CX);
+  CTX.beginPath();CTX.arc(CX,CY,demoR,0,Math.PI*2);
+  CTX.strokeStyle='#2DFFA0';CTX.lineWidth=2;CTX.stroke();CTX.restore();
+  // demo target
+  CTX.save();CTX.globalAlpha=0.2+Math.sin(t*2)*0.1;
+  CTX.beginPath();CTX.arc(CX,CY,120,0,Math.PI*2);
+  CTX.strokeStyle='#2DFFA0';CTX.lineWidth=18;CTX.stroke();CTX.restore();
+  drawCenter();
+  CTX.save();CTX.textAlign='center';
+  CTX.font='italic 26px "Cormorant Garamond",serif';
+  CTX.fillStyle='rgba(45,255,160,'+(.4+Math.sin(t*1.8)*.25)+')';
+  CTX.shadowBlur=18;CTX.shadowColor='rgba(45,255,160,.4)';
+  CTX.fillText('Spore Pulse',CX,CY-28);
+  CTX.font='11px "Space Mono",monospace';CTX.fillStyle='#4a7060';CTX.shadowBlur=0;
+  CTX.fillText('Press \u25b6 PLAY to begin',CX,CY+2);
+  CTX.font='9px "Space Mono",monospace';CTX.fillStyle='#3a5a4a';
+  CTX.fillText('Tap when the ring hits the zone',CX,CY+20);
+  CTX.restore();
+  if(!running)requestAnimationFrame(idle);
+})();
+
+// input
+function doHit(){if(!running||gameOver||waiting)return;checkHit();}
+GC.addEventListener('click',doHit);
+document.addEventListener('keydown',function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();doHit();}});
+
+</script>
+</body>
+</html>
