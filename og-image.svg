@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2DFFA0" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#05080A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur-glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#05080A"/>
+
+  <!-- Subtle radial glow behind logo -->
+  <ellipse cx="600" cy="315" rx="340" ry="280" fill="url(#glow)"/>
+
+  <!-- Border frame -->
+  <rect x="32" y="32" width="1136" height="566" fill="none" stroke="#152820" stroke-width="1"/>
+
+  <!-- Corner accents -->
+  <line x1="32" y1="32" x2="80" y2="32"  stroke="#2DFFA0" stroke-width="1.5"/>
+  <line x1="32" y1="32" x2="32" y2="80"  stroke="#2DFFA0" stroke-width="1.5"/>
+  <line x1="1168" y1="32"  x2="1120" y2="32"  stroke="#2DFFA0" stroke-width="1.5"/>
+  <line x1="1168" y1="32"  x2="1168" y2="80"  stroke="#2DFFA0" stroke-width="1.5"/>
+  <line x1="32"   y1="598" x2="80"   y2="598" stroke="#2DFFA0" stroke-width="1.5"/>
+  <line x1="32"   y1="598" x2="32"   y2="550" stroke="#2DFFA0" stroke-width="1.5"/>
+  <line x1="1168" y1="598" x2="1120" y2="598" stroke="#2DFFA0" stroke-width="1.5"/>
+  <line x1="1168" y1="598" x2="1168" y2="550" stroke="#2DFFA0" stroke-width="1.5"/>
+
+  <!-- Spore logo (centered, scaled up) -->
+  <g transform="translate(550, 175) scale(4.2)">
+    <circle cx="16" cy="16" r="14.5" fill="none" stroke="#2DFFA0" stroke-width="1.3" opacity="0.9"/>
+    <circle cx="16" cy="16" r="12.5" fill="none" stroke="#2DFFA0" stroke-width="0.5" opacity="0.2"/>
+    <circle cx="10" cy="12" r="2.8"  fill="#2DFFA0" opacity="0.85"/>
+    <circle cx="20" cy="10" r="1.6"  fill="#2DFFA0" opacity="0.6"/>
+    <circle cx="16" cy="19" r="3.5"  fill="#2DFFA0" opacity="0.7"/>
+    <circle cx="23" cy="18" r="2.0"  fill="#2DFFA0" opacity="0.5"/>
+    <circle cx="8"  cy="21" r="1.3"  fill="#2DFFA0" opacity="0.45"/>
+    <circle cx="19" cy="24" r="1.0"  fill="#2DFFA0" opacity="0.35"/>
+    <circle cx="13" cy="7"  r="0.9"  fill="#2DFFA0" opacity="0.3"/>
+  </g>
+
+  <!-- SporeLab wordmark -->
+  <text x="600" y="420" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="72" font-style="italic" font-weight="600"
+        fill="#2DFFA0"
+        filter="url(#blur-glow)">SporeLab</text>
+
+  <!-- .xyz in monospace -->
+  <text x="600" y="456" text-anchor="middle"
+        font-family="'Courier New', Courier, monospace"
+        font-size="18" letter-spacing="4"
+        fill="#4a7060">.xyz</text>
+
+  <!-- Tagline -->
+  <text x="600" y="510" text-anchor="middle"
+        font-family="'Courier New', Courier, monospace"
+        font-size="20" letter-spacing="6"
+        fill="#4a7060">WHERE TECH GROWS WILD</text>
+
+  <!-- Subline -->
+  <text x="600" y="548" text-anchor="middle"
+        font-family="'Courier New', Courier, monospace"
+        font-size="14" letter-spacing="2"
+        fill="#2a4a38">Developers · Physicists · Curious Minds · Catalunya</text>
+</svg>
