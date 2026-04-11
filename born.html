@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where Am I Born? — Global Inequality Explorer | SporeLab</title>
+<meta name="description" content="Spin a population-weighted roulette and discover what life looks like if you were born in a different country. An educational tool for understanding global inequality. Data: Gapminder.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://sporelab.xyz/born.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sporelab.xyz/born.html">
+<meta property="og:title" content="Where Am I Born? — Global Inequality Explorer">
+<meta property="og:description" content="A population-weighted roulette that shows you what life looks like if you were born in a different country. Built by SporeLab with Gapminder data.">
+<meta property="og:image" content="https://sporelab.xyz/og-image.svg">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="SporeLab">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Where Am I Born? — Global Inequality Explorer">
+<meta name="twitter:description" content="A population-weighted roulette that shows you what life looks like if you were born in a different country. Built by SporeLab with Gapminder data.">
+<meta name="twitter:image" content="https://sporelab.xyz/og-image.svg">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14.5' fill='none' stroke='%232DFFA0' stroke-width='1.3'/%3E%3Ccircle cx='10' cy='12' r='2.8' fill='%232DFFA0' opacity='.85'/%3E%3Ccircle cx='20' cy='10' r='1.6' fill='%232DFFA0' opacity='.6'/%3E%3Ccircle cx='16' cy='19' r='3.5' fill='%232DFFA0' opacity='.7'/%3E%3Ccircle cx='23' cy='18' r='2' fill='%232DFFA0' opacity='.5'/%3E%3C/svg%3E">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Where Am I Born?",
+  "description": "An interactive tool for understanding global inequality through population-weighted random country assignment.",
+  "url": "https://sporelab.xyz/born.html",
+  "publisher": { "@id": "https://sporelab.xyz/#organization" },
+  "educationalLevel": "beginner",
+  "about": "Global inequality, world population, development indicators",
+  "isAccessibleForFree": true,
+  "citation": {
+    "@type": "WebSite",
+    "name": "Gapminder",
+    "url": "https://www.gapminder.org/data/"
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#05080A;--bg2:#090e10;--g:#2DFFA0;--teal:#00D4C8;--amber:#F5A623;--dim:#152820;--text:#cce8d8;--muted:#4a7060;--glow:0 0 18px rgba(45,255,160,.4),0 0 50px rgba(45,255,160,.12);--glow-sm:0 0 10px rgba(45,255,160,.35)}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden}
+  #bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:500;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.025}
+  nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:linear-gradient(to bottom,rgba(5,8,10,.96) 60%,transparent);backdrop-filter:blur(4px)}
+  .nav-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+  .wm{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.4rem;color:var(--g);letter-spacing:.04em;text-shadow:var(--glow-sm)}
+  .wm span{font-style:normal;font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted)}
+  nav ul{list-style:none;display:flex;gap:2.2rem}
+  nav ul a{color:var(--muted);text-decoration:none;font-size:.72rem;font-family:'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;transition:color .25s;position:relative}
+  nav ul a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--g);transition:width .25s;box-shadow:var(--glow-sm)}
+  nav ul a:hover{color:var(--g)} nav ul a:hover::after{width:100%}
+  .btn-p{background:var(--g);color:var(--bg);border:none;padding:.85rem 2rem;font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:box-shadow .3s,transform .2s;clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%)}
+  .btn-p:hover{box-shadow:var(--glow);transform:translateY(-2px)}
+  .btn-p:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn-g{border:1px solid var(--dim);color:var(--muted);padding:.85rem 2rem;font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:border-color .3s,color .3s;clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%)}
+  .btn-g:hover{border-color:var(--g);color:var(--g)}
+  .lbl{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;color:var(--teal);margin-bottom:.9rem}
+  .stitle{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1.05;margin-bottom:1rem}
+  .sep{max-width:1100px;margin:0 auto;height:1px;background:linear-gradient(to right,transparent,var(--dim),transparent)}
+  .divider{width:50px;height:1px;background:linear-gradient(to right,var(--g),transparent);margin:0 auto 2.8rem;box-shadow:var(--glow-sm)}
+  footer{position:relative;z-index:1;border-top:1px solid var(--dim);padding:2.5rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+  .fl{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;color:var(--g);text-shadow:var(--glow-sm)}
+  .fr{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.08em}
+  .fr a{color:var(--muted);text-decoration:none;transition:color .3s} .fr a:hover{color:var(--g)}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  @keyframes revealFallback{to{opacity:1;transform:translateY(0)}}
+  .reveal{animation:revealFallback 0s 1.5s forwards}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+
+  /* PAGE LAYOUT */
+  main{position:relative;z-index:1;min-height:100vh;padding:9rem 2rem 5rem;max-width:760px;margin:0 auto;text-align:center}
+  .page-eyebrow{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.3em;color:var(--teal);text-transform:uppercase;margin-bottom:1.2rem;opacity:0;animation:fadeUp .8s .3s forwards}
+  .page-title{opacity:0;animation:fadeUp .9s .5s forwards;margin-bottom:.4rem}
+  .page-sub{font-size:clamp(.88rem,1.6vw,1rem);color:var(--muted);max-width:560px;margin:1rem auto 0;line-height:1.8;opacity:0;animation:fadeUp .9s .7s forwards}
+  .world-pop{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.1em;margin-top:1.2rem;opacity:0;animation:fadeUp .9s .9s forwards}
+  .world-pop strong{color:var(--g);text-shadow:var(--glow-sm)}
+
+  /* SPIN ZONE */
+  #spin-zone{margin:3rem auto 0;max-width:560px;opacity:0;animation:fadeUp .9s 1.1s forwards}
+  #roulette-display{background:var(--bg2);border:1px solid var(--dim);padding:1.8rem 2rem;font-family:'Space Mono',monospace;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;transition:border-color .4s,box-shadow .4s;position:relative;overflow:hidden}
+  #roulette-display::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--dim),transparent);transition:background .4s}
+  #roulette-display.spinning{border-color:rgba(45,255,160,.35);box-shadow:var(--glow)}
+  #roulette-display.spinning::before{background:linear-gradient(to right,transparent,var(--g),transparent)}
+  #r-flag{font-size:3rem;line-height:1;transition:transform .1s}
+  #r-name{font-size:.85rem;color:var(--text);letter-spacing:.12em;text-transform:uppercase}
+  #r-idle{font-size:.7rem;color:var(--muted);letter-spacing:.2em}
+  #spin-btn{margin-top:1.4rem;font-size:.78rem;padding:.95rem 2.6rem}
+
+  /* COUNTRY CARD */
+  #country-card{display:none;margin:2.5rem auto 0;max-width:560px;background:var(--bg2);border:1px solid rgba(45,255,160,.25);padding:0;position:relative;overflow:hidden;text-align:left}
+  #country-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--g),transparent)}
+  #country-card.visible{display:block;animation:fadeUp .6s ease forwards}
+
+  .c-header{display:flex;align-items:center;gap:1.2rem;padding:1.6rem 1.8rem;border-bottom:1px solid var(--dim)}
+  .c-flag{font-size:2.8rem;line-height:1;flex-shrink:0}
+  .c-info{flex:1;min-width:0}
+  .c-name{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-style:italic;line-height:1;margin-bottom:.2rem}
+  .c-continent{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--teal);letter-spacing:.14em;text-transform:uppercase}
+  .c-pop-share{font-family:'Space Mono',monospace;font-size:.65rem;text-align:right;flex-shrink:0}
+  .c-pop-pct{font-size:1.6rem;font-weight:700;color:var(--g);font-family:'Cormorant Garamond',serif;line-height:1;text-shadow:var(--glow-sm)}
+  .c-pop-label{color:var(--muted);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase}
+  .c-pop-abs{color:var(--muted);font-size:.58rem;margin-top:.2rem}
+
+  .c-stats{padding:1.4rem 1.8rem;display:flex;flex-direction:column;gap:1.2rem;border-bottom:1px solid var(--dim)}
+  .c-stat-label{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--teal);letter-spacing:.14em;text-transform:uppercase;margin-bottom:.35rem}
+  .c-stat-row{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;margin-bottom:.4rem}
+  .c-stat-value{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;line-height:1;color:var(--text)}
+  .c-compare{font-family:'Space Mono',monospace;font-size:.6rem;color:#7aaa90;margin-left:.3rem}
+  .c-bar-wrap{position:relative;height:6px;background:rgba(255,255,255,.05);border-radius:1px;overflow:visible}
+  .c-bar{height:100%;border-radius:1px;transition:width .8s .3s ease}
+  .c-bar-eu{position:absolute;top:-2px;width:2px;height:10px;background:var(--teal);border-radius:1px;transition:left .8s .3s ease}
+  .c-log-note{font-family:'Space Mono',monospace;font-size:.5rem;color:var(--muted);margin-top:.3rem;letter-spacing:.06em}
+
+  .c-context{padding:1rem 1.8rem;border-bottom:1px solid var(--dim);display:flex;flex-wrap:wrap;gap:.5rem}
+  .c-emoji-tag{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.03);border:1px solid var(--dim);padding:.3rem .7rem;font-size:.75rem}
+  .c-emoji-tag span{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted)}
+
+  .c-insight{padding:1.2rem 1.8rem;border-bottom:1px solid var(--dim);font-size:.92rem;color:var(--text);line-height:1.75}
+  .c-insight strong{color:var(--g)}
+
+  .c-attribution{padding:.9rem 1.8rem;font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);letter-spacing:.06em;line-height:1.8}
+  .c-attribution a{color:#7aaa90;text-decoration:none;transition:color .25s}
+  .c-attribution a:hover{color:var(--g)}
+
+  .spin-again-wrap{margin-top:1.4rem;text-align:center}
+
+  @media(max-width:760px){
+    nav ul{display:none} nav{padding:1rem 1.4rem}
+    main{padding:7rem 1.2rem 4rem}
+    .c-header{flex-wrap:wrap;gap:.8rem}
+    .c-pop-share{text-align:left}
+    footer{flex-direction:column;text-align:center}
+  }
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<nav aria-label="Main navigation">
+  <a href="index.html" class="nav-logo" aria-label="SporeLab — home">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="16" cy="16" r="14.5" fill="none" stroke="#2DFFA0" stroke-width="1.3"/>
+      <circle cx="10" cy="12" r="2.8" fill="#2DFFA0" opacity=".85"/>
+      <circle cx="20" cy="10" r="1.6" fill="#2DFFA0" opacity=".6"/>
+      <circle cx="16" cy="19" r="3.5" fill="#2DFFA0" opacity=".7"/>
+      <circle cx="23" cy="18" r="2" fill="#2DFFA0" opacity=".5"/>
+      <circle cx="8" cy="21" r="1.3" fill="#2DFFA0" opacity=".45"/>
+      <circle cx="19" cy="24" r="1" fill="#2DFFA0" opacity=".35"/>
+    </svg>
+    <div><div class="wm">SporeLab<span>.xyz</span></div></div>
+  </a>
+  <ul>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#game">Play</a></li>
+    <li><a href="index.html#team">Team</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="born.html" style="color:var(--teal)">Born Where?</a></li>
+  </ul>
+</nav>
+
+<main>
+  <p class="page-eyebrow">// explore.origins</p>
+  <h1 class="stitle page-title">Where Am I<br><em style="color:var(--g)">Born?</em></h1>
+  <p class="page-sub">Every person alive was born somewhere by chance. If you want to explain to the young citizens of this planet the inequalities that exist nowadays, we recommend you to dive into the awesome data collected by <a href="https://www.gapminder.org/" style="color:var(--g);text-decoration:none;" target="_blank" rel="noopener">Gapminder </a>. Thanks to their data, you can also play this simple game: spin the globe and discover where are you born — your country is drawn at random, weighted by the real distribution of humanity. <strong style="color:var(--text)">Most people live very differently from what we think.</strong></p>
+  <p class="world-pop"><strong>7,975,000,000</strong> people on Earth · each spin reflects real population proportions</p>
+
+  <div id="spin-zone">
+    <div id="roulette-display" aria-live="polite" aria-label="Country roulette display">
+      <span id="r-flag" aria-hidden="true">🌍</span>
+      <span id="r-idle">Press the button to spin</span>
+      <span id="r-name" style="display:none"></span>
+    </div>
+    <button id="spin-btn" class="btn-p" onclick="startSpin()">Spin the Globe</button>
+  </div>
+
+  <div id="country-card" aria-label="Country result card">
+    <div class="c-header">
+      <span class="c-flag" id="card-flag"></span>
+      <div class="c-info">
+        <div class="c-name" id="card-name"></div>
+        <div class="c-continent" id="card-continent"></div>
+      </div>
+      <div class="c-pop-share">
+        <div class="c-pop-pct" id="card-pct"></div>
+        <div class="c-pop-label">of world</div>
+        <div class="c-pop-abs" id="card-popabs"></div>
+      </div>
+    </div>
+
+    <div class="c-stats">
+      <!-- Life expectancy -->
+      <div class="c-stat">
+        <div class="c-stat-label">Life expectancy at birth</div>
+        <div class="c-stat-row">
+          <span class="c-stat-value" id="stat-le"></span>
+          <span class="c-compare" id="cmp-le"></span>
+        </div>
+        <div class="c-bar-wrap">
+          <div class="c-bar" id="bar-le" style="background:var(--g)"></div>
+          <div class="c-bar-eu" id="eu-le"></div>
+        </div>
+      </div>
+
+      <!-- Income -->
+      <div class="c-stat">
+        <div class="c-stat-label">Income per person / year</div>
+        <div class="c-stat-row">
+          <span class="c-stat-value" id="stat-gni"></span>
+          <span class="c-compare" id="cmp-gni"></span>
+        </div>
+        <div class="c-bar-wrap">
+          <div class="c-bar" id="bar-gni" style="background:var(--amber)"></div>
+          <div class="c-bar-eu" id="eu-gni"></div>
+        </div>
+        <div class="c-log-note">↑ logarithmic scale — income spans a 100× range across countries</div>
+      </div>
+
+      <!-- Child mortality -->
+      <div class="c-stat">
+        <div class="c-stat-label">Child mortality (per 1,000 live births)</div>
+        <div class="c-stat-row">
+          <span class="c-stat-value" id="stat-cm"></span>
+          <span class="c-compare" id="cmp-cm"></span>
+        </div>
+        <div class="c-bar-wrap">
+          <div class="c-bar" id="bar-cm" style="background:var(--teal)"></div>
+          <div class="c-bar-eu" id="eu-cm"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="c-context" id="card-context"></div>
+    <div class="c-insight" id="card-insight"></div>
+    <div class="c-attribution">
+      Data: <a href="https://www.gapminder.org/data/" target="_blank" rel="noopener">Gapminder</a>
+      &nbsp;·&nbsp; Reference year: 2022
+      &nbsp;·&nbsp; Income converted to EUR (2022 avg rate: 1 USD = 0.9536 EUR)
+      &nbsp;·&nbsp; EU averages used for comparison
+    </div>
+  </div>
+
+  <div class="spin-again-wrap" id="spin-again-wrap" style="display:none">
+    <button class="btn-g" onclick="startSpin()">↺ Spin Again</button>
+  </div>
+</main>
+
+<footer>
+  <div class="fl">SporeLab.xyz</div>
+  <div class="fr">
+    <a href="index.html">← Back to SporeLab</a>
+    &nbsp;·&nbsp;
+    Data: <a href="https://www.gapminder.org/data/" target="_blank" rel="noopener">Gapminder</a>
+    &nbsp;·&nbsp; © 2026
+  </div>
+</footer>
+
+<script>
+// ─── WORLD DATA (Gapminder, reference year 2022) ─────────────────────────────
+// Sources: population_total, life_expectancy_years, gnipercapita_ppp (→ EUR at 0.9536),
+//          child_mortality_0_5_year_olds_dying_per_1000_born
+// Territories with population < 300k or missing core data omitted.
+const WORLD_DATA = {
+  meta: {
+    year: 2022,
+    world_population: 7975000000,
+    eu_avg: { life_expectancy: 80.4, gni_ppp_eur: 34200, child_mortality: 3.8 }
+  },
+  countries: {
+    "CN": { name:"China",              flag:"🇨🇳", continent:"Asia",          population:1412600000, life_expectancy:78.2, gni_ppp_eur:17610, child_mortality:6.8  },
+    "IN": { name:"India",              flag:"🇮🇳", continent:"Asia",          population:1417173120, life_expectancy:67.2, gni_ppp_eur:6780,  child_mortality:26.6 },
+    "US": { name:"United States",      flag:"🇺🇸", continent:"Americas",      population:335893238,  life_expectancy:76.1, gni_ppp_eur:59400, child_mortality:5.4  },
+    "ID": { name:"Indonesia",          flag:"🇮🇩", continent:"Asia",          population:275501339,  life_expectancy:67.6, gni_ppp_eur:11540, child_mortality:21.1 },
+    "PK": { name:"Pakistan",           flag:"🇵🇰", continent:"Asia",          population:231402117,  life_expectancy:67.3, gni_ppp_eur:4870,  child_mortality:55.7 },
+    "BR": { name:"Brazil",             flag:"🇧🇷", continent:"Americas",      population:215353593,  life_expectancy:72.8, gni_ppp_eur:14060, child_mortality:13.4 },
+    "NG": { name:"Nigeria",            flag:"🇳🇬", continent:"Africa",        population:218541212,  life_expectancy:52.7, gni_ppp_eur:4950,  child_mortality:108.0},
+    "BD": { name:"Bangladesh",         flag:"🇧🇩", continent:"Asia",          population:169356251,  life_expectancy:72.4, gni_ppp_eur:5630,  child_mortality:26.5 },
+    "RU": { name:"Russia",             flag:"🇷🇺", continent:"Europe",        population:144713314,  life_expectancy:70.1, gni_ppp_eur:26540, child_mortality:5.0  },
+    "ET": { name:"Ethiopia",           flag:"🇪🇹", continent:"Africa",        population:123379924,  life_expectancy:65.0, gni_ppp_eur:2210,  child_mortality:48.5 },
+    "MX": { name:"Mexico",             flag:"🇲🇽", continent:"Americas",      population:127575529,  life_expectancy:70.2, gni_ppp_eur:18760, child_mortality:13.3 },
+    "JP": { name:"Japan",              flag:"🇯🇵", continent:"Asia",          population:125124989,  life_expectancy:83.9, gni_ppp_eur:39280, child_mortality:2.0  },
+    "EG": { name:"Egypt",              flag:"🇪🇬", continent:"Africa",        population:105914499,  life_expectancy:70.2, gni_ppp_eur:11620, child_mortality:18.2 },
+    "CD": { name:"DR Congo",           flag:"🇨🇩", continent:"Africa",        population:99010212,   life_expectancy:58.6, gni_ppp_eur:1090,  child_mortality:82.5 },
+    "PH": { name:"Philippines",        flag:"🇵🇭", continent:"Asia",          population:115559009,  life_expectancy:69.3, gni_ppp_eur:8550,  child_mortality:24.7 },
+    "VN": { name:"Vietnam",            flag:"🇻🇳", continent:"Asia",          population:97338579,   life_expectancy:75.4, gni_ppp_eur:9270,  child_mortality:19.0 },
+    "IR": { name:"Iran",               flag:"🇮🇷", continent:"Asia",          population:87923432,   life_expectancy:74.4, gni_ppp_eur:12580, child_mortality:13.3 },
+    "DE": { name:"Germany",            flag:"🇩🇪", continent:"Europe",        population:83794000,   life_expectancy:80.6, gni_ppp_eur:53300, child_mortality:3.4  },
+    "TR": { name:"Turkey",             flag:"🇹🇷", continent:"Asia",          population:85561976,   life_expectancy:76.9, gni_ppp_eur:31880, child_mortality:9.5  },
+    "TH": { name:"Thailand",           flag:"🇹🇭", continent:"Asia",          population:71697030,   life_expectancy:77.5, gni_ppp_eur:17350, child_mortality:8.0  },
+    "GB": { name:"United Kingdom",     flag:"🇬🇧", continent:"Europe",        population:67026292,   life_expectancy:80.7, gni_ppp_eur:44550, child_mortality:3.7  },
+    "FR": { name:"France",             flag:"🇫🇷", continent:"Europe",        population:67391582,   life_expectancy:82.3, gni_ppp_eur:44020, child_mortality:3.7  },
+    "TZ": { name:"Tanzania",           flag:"🇹🇿", continent:"Africa",        population:63298550,   life_expectancy:65.5, gni_ppp_eur:2540,  child_mortality:51.2 },
+    "ZA": { name:"South Africa",       flag:"🇿🇦", continent:"Africa",        population:59893885,   life_expectancy:62.0, gni_ppp_eur:13220, child_mortality:28.0 },
+    "MM": { name:"Myanmar",            flag:"🇲🇲", continent:"Asia",          population:54409800,   life_expectancy:65.1, gni_ppp_eur:4480,  child_mortality:37.4 },
+    "KE": { name:"Kenya",              flag:"🇰🇪", continent:"Africa",        population:54027487,   life_expectancy:63.4, gni_ppp_eur:4820,  child_mortality:36.5 },
+    "KR": { name:"South Korea",        flag:"🇰🇷", continent:"Asia",          population:51815810,   life_expectancy:83.6, gni_ppp_eur:43370, child_mortality:2.8  },
+    "CO": { name:"Colombia",           flag:"🇨🇴", continent:"Americas",      population:51265844,   life_expectancy:71.7, gni_ppp_eur:14700, child_mortality:13.3 },
+    "ES": { name:"Spain",              flag:"🇪🇸", continent:"Europe",        population:47415750,   life_expectancy:83.2, gni_ppp_eur:37520, child_mortality:2.9  },
+    "UG": { name:"Uganda",             flag:"🇺🇬", continent:"Africa",        population:47123531,   life_expectancy:62.5, gni_ppp_eur:2280,  child_mortality:45.9 },
+    "AR": { name:"Argentina",          flag:"🇦🇷", continent:"Americas",      population:45195774,   life_expectancy:74.1, gni_ppp_eur:20980, child_mortality:8.7  },
+    "DZ": { name:"Algeria",            flag:"🇩🇿", continent:"Africa",        population:44903225,   life_expectancy:76.7, gni_ppp_eur:11130, child_mortality:22.0 },
+    "SD": { name:"Sudan",              flag:"🇸🇩", continent:"Africa",        population:44909353,   life_expectancy:62.4, gni_ppp_eur:3360,  child_mortality:56.4 },
+    "IQ": { name:"Iraq",               flag:"🇮🇶", continent:"Asia",          population:41179350,   life_expectancy:70.4, gni_ppp_eur:15310, child_mortality:23.7 },
+    "UA": { name:"Ukraine",            flag:"🇺🇦", continent:"Europe",        population:43531422,   life_expectancy:73.0, gni_ppp_eur:13290, child_mortality:7.2  },
+    "MA": { name:"Morocco",            flag:"🇲🇦", continent:"Africa",        population:37457971,   life_expectancy:74.6, gni_ppp_eur:8750,  child_mortality:19.0 },
+    "SA": { name:"Saudi Arabia",       flag:"🇸🇦", continent:"Asia",          population:35013414,   life_expectancy:76.5, gni_ppp_eur:54320, child_mortality:6.2  },
+    "PE": { name:"Peru",               flag:"🇵🇪", continent:"Americas",      population:33359418,   life_expectancy:71.1, gni_ppp_eur:11670, child_mortality:14.1 },
+    "AO": { name:"Angola",             flag:"🇦🇴", continent:"Africa",        population:34503774,   life_expectancy:61.0, gni_ppp_eur:6320,  child_mortality:71.5 },
+    "MZ": { name:"Mozambique",         flag:"🇲🇿", continent:"Africa",        population:32164360,   life_expectancy:60.9, gni_ppp_eur:1260,  child_mortality:69.2 },
+    "GH": { name:"Ghana",              flag:"🇬🇭", continent:"Africa",        population:32395450,   life_expectancy:64.1, gni_ppp_eur:5310,  child_mortality:43.2 },
+    "YE": { name:"Yemen",              flag:"🇾🇪", continent:"Asia",          population:33696614,   life_expectancy:63.0, gni_ppp_eur:2120,  child_mortality:55.9 },
+    "VE": { name:"Venezuela",          flag:"🇻🇪", continent:"Americas",      population:28301696,   life_expectancy:70.2, gni_ppp_eur:7240,  child_mortality:16.0 },
+    "NP": { name:"Nepal",              flag:"🇳🇵", continent:"Asia",          population:29136808,   life_expectancy:70.6, gni_ppp_eur:3720,  child_mortality:28.9 },
+    "MG": { name:"Madagascar",         flag:"🇲🇬", continent:"Africa",        population:28915653,   life_expectancy:64.5, gni_ppp_eur:1540,  child_mortality:53.4 },
+    "CM": { name:"Cameroon",           flag:"🇨🇲", continent:"Africa",        population:27914536,   life_expectancy:59.2, gni_ppp_eur:3580,  child_mortality:63.3 },
+    "CI": { name:"Côte d'Ivoire",      flag:"🇨🇮", continent:"Africa",        population:27478249,   life_expectancy:57.8, gni_ppp_eur:5160,  child_mortality:71.4 },
+    "AU": { name:"Australia",          flag:"🇦🇺", continent:"Oceania",       population:25978935,   life_expectancy:83.2, gni_ppp_eur:51490, child_mortality:3.1  },
+    "NE": { name:"Niger",              flag:"🇳🇪", continent:"Africa",        population:25252706,   life_expectancy:60.4, gni_ppp_eur:1160,  child_mortality:79.7 },
+    "TW": { name:"Taiwan",             flag:"🇹🇼", continent:"Asia",          population:23571227,   life_expectancy:80.9, gni_ppp_eur:55820, child_mortality:3.5  },
+    "LK": { name:"Sri Lanka",          flag:"🇱🇰", continent:"Asia",          population:22156000,   life_expectancy:76.4, gni_ppp_eur:11520, child_mortality:7.2  },
+    "SY": { name:"Syria",              flag:"🇸🇾", continent:"Asia",          population:21324367,   life_expectancy:72.3, gni_ppp_eur:2940,  child_mortality:17.0 },
+    "ML": { name:"Mali",               flag:"🇲🇱", continent:"Africa",        population:22414000,   life_expectancy:58.9, gni_ppp_eur:2220,  child_mortality:88.0 },
+    "BF": { name:"Burkina Faso",       flag:"🇧🇫", continent:"Africa",        population:22100683,   life_expectancy:59.3, gni_ppp_eur:2170,  child_mortality:79.0 },
+    "RO": { name:"Romania",            flag:"🇷🇴", continent:"Europe",        population:19237691,   life_expectancy:74.4, gni_ppp_eur:28210, child_mortality:6.5  },
+    "CL": { name:"Chile",              flag:"🇨🇱", continent:"Americas",      population:19603733,   life_expectancy:80.5, gni_ppp_eur:22360, child_mortality:6.5  },
+    "KZ": { name:"Kazakhstan",         flag:"🇰🇿", continent:"Asia",          population:19398618,   life_expectancy:69.4, gni_ppp_eur:25290, child_mortality:10.3 },
+    "NL": { name:"Netherlands",        flag:"🇳🇱", continent:"Europe",        population:17590672,   life_expectancy:81.6, gni_ppp_eur:55280, child_mortality:3.6  },
+    "EC": { name:"Ecuador",            flag:"🇪🇨", continent:"Americas",      population:18001000,   life_expectancy:73.3, gni_ppp_eur:10650, child_mortality:13.5 },
+    "GT": { name:"Guatemala",          flag:"🇬🇹", continent:"Americas",      population:17109746,   life_expectancy:73.6, gni_ppp_eur:8290,  child_mortality:24.0 },
+    "KH": { name:"Cambodia",           flag:"🇰🇭", continent:"Asia",          population:16590929,   life_expectancy:70.3, gni_ppp_eur:4380,  child_mortality:22.8 },
+    "ZW": { name:"Zimbabwe",           flag:"🇿🇼", continent:"Africa",        population:15178979,   life_expectancy:61.8, gni_ppp_eur:3050,  child_mortality:40.2 },
+    "SN": { name:"Senegal",            flag:"🇸🇳", continent:"Africa",        population:17765952,   life_expectancy:67.9, gni_ppp_eur:3490,  child_mortality:40.0 },
+    "SS": { name:"South Sudan",        flag:"🇸🇸", continent:"Africa",        population:11088796,   life_expectancy:55.0, gni_ppp_eur:1510,  child_mortality:95.2 },
+    "TD": { name:"Chad",               flag:"🇹🇩", continent:"Africa",        population:17413580,   life_expectancy:52.5, gni_ppp_eur:1470,  child_mortality:113.0},
+    "SO": { name:"Somalia",            flag:"🇸🇴", continent:"Africa",        population:17065581,   life_expectancy:55.4, gni_ppp_eur:1340,  child_mortality:103.0},
+    "ZM": { name:"Zambia",             flag:"🇿🇲", continent:"Africa",        population:19470234,   life_expectancy:61.7, gni_ppp_eur:3470,  child_mortality:51.6 },
+    "BO": { name:"Bolivia",            flag:"🇧🇴", continent:"Americas",      population:12079472,   life_expectancy:71.5, gni_ppp_eur:8110,  child_mortality:23.8 },
+    "DO": { name:"Dominican Republic", flag:"🇩🇴", continent:"Americas",      population:11117873,   life_expectancy:72.0, gni_ppp_eur:17310, child_mortality:24.6 },
+    "BE": { name:"Belgium",            flag:"🇧🇪", continent:"Europe",        population:11590000,   life_expectancy:81.6, gni_ppp_eur:52150, child_mortality:3.3  },
+    "HT": { name:"Haiti",              flag:"🇭🇹", continent:"Americas",      population:11447569,   life_expectancy:63.2, gni_ppp_eur:2880,  child_mortality:52.7 },
+    "CU": { name:"Cuba",               flag:"🇨🇺", continent:"Americas",      population:11256372,   life_expectancy:74.0, gni_ppp_eur:9000,  child_mortality:4.5  },
+    "SE": { name:"Sweden",             flag:"🇸🇪", continent:"Europe",        population:10379295,   life_expectancy:82.4, gni_ppp_eur:54850, child_mortality:2.6  },
+    "AZ": { name:"Azerbaijan",         flag:"🇦🇿", continent:"Asia",          population:10139177,   life_expectancy:73.0, gni_ppp_eur:14890, child_mortality:16.9 },
+    "HN": { name:"Honduras",           flag:"🇭🇳", continent:"Americas",      population:10278345,   life_expectancy:73.8, gni_ppp_eur:5640,  child_mortality:14.2 },
+    "TJ": { name:"Tajikistan",         flag:"🇹🇯", continent:"Asia",          population:9952787,    life_expectancy:71.7, gni_ppp_eur:4060,  child_mortality:30.3 },
+    "AT": { name:"Austria",            flag:"🇦🇹", continent:"Europe",        population:8932664,    life_expectancy:81.4, gni_ppp_eur:55600, child_mortality:3.0  },
+    "CH": { name:"Switzerland",        flag:"🇨🇭", continent:"Europe",        population:8703405,    life_expectancy:83.1, gni_ppp_eur:69150, child_mortality:3.7  },
+    "PT": { name:"Portugal",           flag:"🇵🇹", continent:"Europe",        population:10270865,   life_expectancy:81.1, gni_ppp_eur:33090, child_mortality:3.0  },
+    "IL": { name:"Israel",             flag:"🇮🇱", continent:"Asia",          population:9364900,    life_expectancy:82.6, gni_ppp_eur:42090, child_mortality:3.5  },
+    "TG": { name:"Togo",               flag:"🇹🇬", continent:"Africa",        population:8680837,    life_expectancy:61.1, gni_ppp_eur:2470,  child_mortality:57.6 },
+    "SL": { name:"Sierra Leone",       flag:"🇸🇱", continent:"Africa",        population:8420641,    life_expectancy:54.7, gni_ppp_eur:1720,  child_mortality:107.0},
+    "GN": { name:"Guinea",             flag:"🇬🇳", continent:"Africa",        population:13531906,   life_expectancy:59.0, gni_ppp_eur:2310,  child_mortality:78.4 },
+    "RS": { name:"Serbia",             flag:"🇷🇸", continent:"Europe",        population:6804596,    life_expectancy:74.5, gni_ppp_eur:21210, child_mortality:5.3  },
+    "LA": { name:"Laos",               flag:"🇱🇦", continent:"Asia",          population:7379358,    life_expectancy:68.0, gni_ppp_eur:6960,  child_mortality:33.7 },
+    "LY": { name:"Libya",              flag:"🇱🇾", continent:"Africa",        population:6931566,    life_expectancy:72.3, gni_ppp_eur:13050, child_mortality:12.1 },
+    "SV": { name:"El Salvador",        flag:"🇸🇻", continent:"Americas",      population:6314167,    life_expectancy:70.9, gni_ppp_eur:8760,  child_mortality:12.0 },
+    "TM": { name:"Turkmenistan",       flag:"🇹🇲", continent:"Asia",          population:6118000,    life_expectancy:68.2, gni_ppp_eur:15840, child_mortality:36.8 },
+    "SG": { name:"Singapore",          flag:"🇸🇬", continent:"Asia",          population:5975689,    life_expectancy:83.0, gni_ppp_eur:91530, child_mortality:2.3  },
+    "NO": { name:"Norway",             flag:"🇳🇴", continent:"Europe",        population:5450000,    life_expectancy:83.0, gni_ppp_eur:67600, child_mortality:2.4  },
+    "FI": { name:"Finland",            flag:"🇫🇮", continent:"Europe",        population:5543000,    life_expectancy:81.5, gni_ppp_eur:50380, child_mortality:2.4  },
+    "DK": { name:"Denmark",            flag:"🇩🇰", continent:"Europe",        population:5919749,    life_expectancy:81.4, gni_ppp_eur:57130, child_mortality:3.4  },
+    "SK": { name:"Slovakia",           flag:"🇸🇰", continent:"Europe",        population:5459781,    life_expectancy:75.7, gni_ppp_eur:33760, child_mortality:5.5  },
+    "NZ": { name:"New Zealand",        flag:"🇳🇿", continent:"Oceania",       population:5002100,    life_expectancy:82.0, gni_ppp_eur:42690, child_mortality:4.6  },
+    "IE": { name:"Ireland",            flag:"🇮🇪", continent:"Europe",        population:5123536,    life_expectancy:82.2, gni_ppp_eur:92430, child_mortality:3.3  },
+    "CR": { name:"Costa Rica",         flag:"🇨🇷", continent:"Americas",      population:5153957,    life_expectancy:78.8, gni_ppp_eur:19640, child_mortality:8.2  },
+    "PL": { name:"Poland",             flag:"🇵🇱", continent:"Europe",        population:37840001,   life_expectancy:77.8, gni_ppp_eur:35590, child_mortality:4.0  },
+    "CZ": { name:"Czechia",            flag:"🇨🇿", continent:"Europe",        population:10900555,   life_expectancy:78.3, gni_ppp_eur:43510, child_mortality:2.9  },
+    "GR": { name:"Greece",             flag:"🇬🇷", continent:"Europe",        population:10718565,   life_expectancy:81.9, gni_ppp_eur:29270, child_mortality:3.5  },
+    "HU": { name:"Hungary",            flag:"🇭🇺", continent:"Europe",        population:9967308,    life_expectancy:75.5, gni_ppp_eur:34250, child_mortality:3.4  },
+    "BY": { name:"Belarus",            flag:"🇧🇾", continent:"Europe",        population:9408400,    life_expectancy:74.0, gni_ppp_eur:19950, child_mortality:2.9  },
+    "QA": { name:"Qatar",              flag:"🇶🇦", continent:"Asia",          population:2695122,    life_expectancy:78.3, gni_ppp_eur:105400,child_mortality:6.2  },
+    "AE": { name:"UAE",                flag:"🇦🇪", continent:"Asia",          population:9770529,    life_expectancy:78.0, gni_ppp_eur:68490, child_mortality:6.3  },
+    "AF": { name:"Afghanistan",        flag:"🇦🇫", continent:"Asia",          population:40754388,   life_expectancy:62.1, gni_ppp_eur:1700,  child_mortality:55.0 },
+    "KP": { name:"North Korea",        flag:"🇰🇵", continent:"Asia",          population:25971909,   life_expectancy:72.3, gni_ppp_eur:1680,  child_mortality:13.5 },
+    "UZ":{ name:"Uzbekistan",         flag:"🇺🇿", continent:"Asia",          population:35264600,   life_expectancy:72.0, gni_ppp_eur:8470,  child_mortality:21.4 },
+    "PA": { name:"Panama",             flag:"🇵🇦", continent:"Americas",      population:4351267,    life_expectancy:77.3, gni_ppp_eur:26110, child_mortality:12.6 },
+    "PY": { name:"Paraguay",           flag:"🇵🇾", continent:"Americas",      population:7356409,    life_expectancy:73.6, gni_ppp_eur:11810, child_mortality:19.0 },
+    "MW": { name:"Malawi",             flag:"🇲🇼", continent:"Africa",        population:19889742,   life_expectancy:64.5, gni_ppp_eur:1510,  child_mortality:39.0 },
+    "RW": { name:"Rwanda",             flag:"🇷🇼", continent:"Africa",        population:13776698,   life_expectancy:67.7, gni_ppp_eur:2270,  child_mortality:36.0 },
+    "BI": { name:"Burundi",            flag:"🇧🇮", continent:"Africa",        population:12574571,   life_expectancy:61.3, gni_ppp_eur:790,   child_mortality:52.2 },
+    "BJ": { name:"Benin",              flag:"🇧🇯", continent:"Africa",        population:13002689,   life_expectancy:61.5, gni_ppp_eur:3280,  child_mortality:68.0 },
+    "GA": { name:"Gabon",              flag:"🇬🇦", continent:"Africa",        population:2341179,    life_expectancy:64.8, gni_ppp_eur:14230, child_mortality:37.2 },
+    "MR": { name:"Mauritania",         flag:"🇲🇷", continent:"Africa",        population:4649660,    life_expectancy:64.0, gni_ppp_eur:5490,  child_mortality:56.4 },
+    "ER": { name:"Eritrea",            flag:"🇪🇷", continent:"Africa",        population:3601000,    life_expectancy:66.3, gni_ppp_eur:1710,  child_mortality:36.8 },
+    "GM": { name:"Gambia",             flag:"🇬🇲", continent:"Africa",        population:2639916,    life_expectancy:62.0, gni_ppp_eur:2430,  child_mortality:46.1 },
+    "GW": { name:"Guinea-Bissau",      flag:"🇬🇼", continent:"Africa",        population:2060721,    life_expectancy:58.7, gni_ppp_eur:1820,  child_mortality:73.0 },
+    "CF": { name:"Central African Republic", flag:"🇨🇫", continent:"Africa",  population:5579144,    life_expectancy:53.7, gni_ppp_eur:990,   child_mortality:99.2 },
+    "CG": { name:"Republic of Congo",  flag:"🇨🇬", continent:"Africa",        population:5797805,    life_expectancy:63.5, gni_ppp_eur:5870,  child_mortality:48.4 },
+    "LR": { name:"Liberia",            flag:"🇱🇷", continent:"Africa",        population:5358483,    life_expectancy:61.0, gni_ppp_eur:1450,  child_mortality:67.9 },
+    "JO": { name:"Jordan",             flag:"🇯🇴", continent:"Asia",          population:10269021,   life_expectancy:74.7, gni_ppp_eur:9200,  child_mortality:14.8 },
+    "LB": { name:"Lebanon",            flag:"🇱🇧", continent:"Asia",          population:6769000,    life_expectancy:74.8, gni_ppp_eur:7700,  child_mortality:6.7  },
+    "TN": { name:"Tunisia",            flag:"🇹🇳", continent:"Africa",        population:11818619,   life_expectancy:76.7, gni_ppp_eur:10330, child_mortality:14.0 },
+    "LV": { name:"Latvia",             flag:"🇱🇻", continent:"Europe",        population:1830211,    life_expectancy:74.8, gni_ppp_eur:34470, child_mortality:4.4  },
+    "LT": { name:"Lithuania",          flag:"🇱🇹", continent:"Europe",        population:2800138,    life_expectancy:76.0, gni_ppp_eur:41280, child_mortality:3.6  },
+    "EE": { name:"Estonia",            flag:"🇪🇪", continent:"Europe",        population:1331796,    life_expectancy:77.5, gni_ppp_eur:38620, child_mortality:2.3  },
+    "HR": { name:"Croatia",            flag:"🇭🇷", continent:"Europe",        population:3871833,    life_expectancy:77.9, gni_ppp_eur:33640, child_mortality:4.4  },
+    "BA": { name:"Bosnia & Herzegovina",flag:"🇧🇦", continent:"Europe",       population:3270943,    life_expectancy:77.2, gni_ppp_eur:16710, child_mortality:5.0  },
+    "AL": { name:"Albania",            flag:"🇦🇱", continent:"Europe",        population:2811666,    life_expectancy:79.0, gni_ppp_eur:15580, child_mortality:8.2  },
+    "MK": { name:"North Macedonia",    flag:"🇲🇰", continent:"Europe",        population:2082958,    life_expectancy:75.8, gni_ppp_eur:17070, child_mortality:5.5  },
+    "GE": { name:"Georgia",            flag:"🇬🇪", continent:"Asia",          population:3728573,    life_expectancy:73.8, gni_ppp_eur:14620, child_mortality:9.1  },
+    "AM": { name:"Armenia",            flag:"🇦🇲", continent:"Asia",          population:2961514,    life_expectancy:75.0, gni_ppp_eur:14790, child_mortality:11.7 },
+    "MN": { name:"Mongolia",           flag:"🇲🇳", continent:"Asia",          population:3347782,    life_expectancy:70.5, gni_ppp_eur:10780, child_mortality:17.3 },
+    "KG": { name:"Kyrgyzstan",         flag:"🇰🇬", continent:"Asia",          population:6728200,    life_expectancy:72.0, gni_ppp_eur:5050,  child_mortality:19.9 },
+    "BG": { name:"Bulgaria",           flag:"🇧🇬", continent:"Europe",        population:6447710,    life_expectancy:73.6, gni_ppp_eur:25740, child_mortality:5.8  },
+    "MD": { name:"Moldova",            flag:"🇲🇩", continent:"Europe",        population:2617990,    life_expectancy:70.9, gni_ppp_eur:13720, child_mortality:12.2 },
+    "SI": { name:"Slovenia",           flag:"🇸🇮", continent:"Europe",        population:2119410,    life_expectancy:81.3, gni_ppp_eur:42260, child_mortality:2.3  },
+    "IT": { name:"Italy",              flag:"🇮🇹", continent:"Europe",        population:59554023,   life_expectancy:83.2, gni_ppp_eur:42070, child_mortality:2.8  },
+    "PG": { name:"Papua New Guinea",   flag:"🇵🇬", continent:"Oceania",       population:10143414,   life_expectancy:64.5, gni_ppp_eur:3730,  child_mortality:38.0 },
+    "FJ": { name:"Fiji",               flag:"🇫🇯", continent:"Oceania",       population:929766,     life_expectancy:67.4, gni_ppp_eur:10550, child_mortality:21.5 },
+    "CA": { name:"Canada",             flag:"🇨🇦", continent:"Americas",      population:38246108,   life_expectancy:82.0, gni_ppp_eur:50550, child_mortality:4.4  }
+  }
+};
+
+// ─── INDEX BUILD ──────────────────────────────────────────────────────────────
+var countryKeys = [];
+var cumulative  = [];
+var totalPop    = 0;
+
+(function buildIndex() {
+  countryKeys = Object.keys(WORLD_DATA.countries);
+  var running = 0;
+  for (var i = 0; i < countryKeys.length; i++) {
+    running += WORLD_DATA.countries[countryKeys[i]].population;
+    cumulative.push(running);
+  }
+  totalPop = running;
+})();
+
+// ─── WEIGHTED RANDOM ─────────────────────────────────────────────────────────
+function pickWeightedCountry() {
+  var rand = Math.random() * totalPop;
+  var lo = 0, hi = cumulative.length - 1;
+  while (lo < hi) {
+    var mid = (lo + hi) >> 1;
+    if (cumulative[mid] < rand) lo = mid + 1; else hi = mid;
+  }
+  return countryKeys[lo];
+}
+
+// ─── ROULETTE ─────────────────────────────────────────────────────────────────
+var spinning = false;
+var finalCountry = null;
+
+function startSpin() {
+  if (spinning) return;
+  spinning = true;
+  finalCountry = pickWeightedCountry();
+
+  var display = document.getElementById('roulette-display');
+  var btn = document.getElementById('spin-btn');
+  var rFlag = document.getElementById('r-flag');
+  var rName = document.getElementById('r-name');
+  var rIdle = document.getElementById('r-idle');
+  var card = document.getElementById('country-card');
+  var againWrap = document.getElementById('spin-again-wrap');
+
+  // Hide card and again button
+  card.classList.remove('visible');
+  card.style.display = 'none';
+  againWrap.style.display = 'none';
+
+  display.classList.add('spinning');
+  btn.disabled = true;
+  rIdle.style.display = 'none';
+  rName.style.display = 'block';
+
+  // Delay schedule: fast phase then slowing
+  var delays = [80,80,80,80,80,80,80,80,80,80, 120,160,220,310,450,650];
+  var step = 0;
+
+  function nextFrame() {
+    if (step < delays.length - 1) {
+      var temp = pickWeightedCountry();
+      var tc = WORLD_DATA.countries[temp];
+      rFlag.textContent = tc.flag;
+      rName.textContent = tc.name;
+    } else {
+      // Final frame
+      var fc = WORLD_DATA.countries[finalCountry];
+      rFlag.textContent = fc.flag;
+      rName.textContent = fc.name;
+      display.classList.remove('spinning');
+      spinning = false;
+      btn.disabled = false;
+      btn.textContent = 'Spin the Globe';
+      revealCard(finalCountry);
+      againWrap.style.display = 'block';
+      return;
+    }
+    step++;
+    setTimeout(nextFrame, delays[step]);
+  }
+  setTimeout(nextFrame, delays[0]);
+}
+
+// ─── BAR HELPERS ─────────────────────────────────────────────────────────────
+function barWidth(value, min, max) {
+  return Math.max(2, Math.min(99, ((value - min) / (max - min)) * 100));
+}
+function barWidthLog(value, min, max) {
+  return Math.max(2, Math.min(99, ((Math.log(value) - Math.log(min)) / (Math.log(max) - Math.log(min))) * 100));
+}
+
+// ─── REVEAL CARD ─────────────────────────────────────────────────────────────
+function fmtPop(p) {
+  if (p >= 1e9) return (p/1e9).toFixed(2) + 'B';
+  if (p >= 1e6) return (p/1e6).toFixed(1) + 'M';
+  return (p/1e3).toFixed(0) + 'K';
+}
+function fmtEur(v) {
+  if (v >= 10000) return '€' + (v/1000).toFixed(0) + ',000';
+  return '€' + v.toFixed(0);
+}
+
+function revealCard(key) {
+  var c = WORLD_DATA.countries[key];
+  var eu = WORLD_DATA.meta.eu_avg;
+
+  document.getElementById('card-flag').textContent = c.flag;
+  document.getElementById('card-name').textContent = c.name;
+  document.getElementById('card-continent').textContent = c.continent;
+
+  var pct = (c.population / WORLD_DATA.meta.world_population * 100);
+  document.getElementById('card-pct').textContent = pct < 0.1 ? '<0.1%' : pct.toFixed(1) + '%';
+  document.getElementById('card-popabs').textContent = fmtPop(c.population) + ' people';
+
+  // Life expectancy bar (scale 30–90)
+  var leW = barWidth(c.life_expectancy, 30, 90);
+  var leEu = barWidth(eu.life_expectancy, 30, 90);
+  document.getElementById('stat-le').textContent = c.life_expectancy.toFixed(1) + ' yrs';
+  document.getElementById('cmp-le').textContent = '(EU avg: ' + eu.life_expectancy + ')';
+  document.getElementById('bar-le').style.width = leW + '%';
+  document.getElementById('eu-le').style.left = leEu + '%';
+
+  // GNI bar log scale (500–120000)
+  var gniW = barWidthLog(c.gni_ppp_eur, 500, 120000);
+  var gniEu = barWidthLog(eu.gni_ppp_eur, 500, 120000);
+  document.getElementById('stat-gni').textContent = fmtEur(c.gni_ppp_eur) + ' / yr';
+  document.getElementById('cmp-gni').textContent = '(EU avg: ' + fmtEur(eu.gni_ppp_eur) + ')';
+  document.getElementById('bar-gni').style.width = gniW + '%';
+  document.getElementById('eu-gni').style.left = gniEu + '%';
+
+  // Child mortality bar (scale 0–130)
+  var cmW = barWidth(c.child_mortality, 0, 130);
+  var cmEu = barWidth(eu.child_mortality, 0, 130);
+  document.getElementById('stat-cm').textContent = c.child_mortality.toFixed(1);
+  document.getElementById('cmp-cm').textContent = '(EU avg: ' + eu.child_mortality + ')';
+  document.getElementById('bar-cm').style.width = cmW + '%';
+  document.getElementById('eu-cm').style.left = cmEu + '%';
+
+  // Context emojis
+  var ctx = document.getElementById('card-context');
+  ctx.innerHTML = '';
+  var tags = [];
+  if (c.child_mortality > 60)       tags.push(['⚠️', 'Very high child mortality']);
+  else if (c.child_mortality > 30)  tags.push(['⚠️', 'High child mortality']);
+  if (c.gni_ppp_eur < 2000)         tags.push(['🌾', 'Very low income']);
+  else if (c.gni_ppp_eur < 6000)    tags.push(['🌾', 'Low income']);
+  if (c.life_expectancy < 60)       tags.push(['🏥', 'Very limited healthcare']);
+  else if (c.life_expectancy < 68)  tags.push(['🏥', 'Limited healthcare access']);
+  if (c.gni_ppp_eur > 40000)        tags.push(['🏙️', 'High income country']);
+  if (c.life_expectancy > 82)       tags.push(['✨', 'Very high life expectancy']);
+  if (tags.length === 0)            tags.push(['🌍', 'Middle income country']);
+  tags.forEach(function(t) {
+    var el = document.createElement('div');
+    el.className = 'c-emoji-tag';
+    el.innerHTML = t[0] + ' <span>' + t[1] + '</span>';
+    ctx.appendChild(el);
+  });
+
+  // Insight sentence
+  var insight = document.getElementById('card-insight');
+  var incomeRatio = eu.gni_ppp_eur / c.gni_ppp_eur;
+  var lifeGap = eu.life_expectancy - c.life_expectancy;
+  var text;
+  if (c.gni_ppp_eur > eu.gni_ppp_eur * 0.85) {
+    text = c.name + ' has one of the highest incomes in the world — roughly comparable to EU average.';
+  } else if (incomeRatio > 10) {
+    text = 'The average European earns <strong>' + incomeRatio.toFixed(0) + '× more</strong> per year than someone in ' + c.name + '.';
+  } else if (lifeGap > 12) {
+    text = 'People in ' + c.name + ' live on average <strong>' + lifeGap.toFixed(0) + ' fewer years</strong> than in Europe.';
+  } else if (c.child_mortality > 50) {
+    text = 'In ' + c.name + ', <strong>' + c.child_mortality.toFixed(0) + ' out of every 1,000 newborns</strong> do not survive their first five years of life.';
+  } else {
+    text = c.name + ' is home to <strong>' + fmtPop(c.population) + ' people</strong> — ' + pct.toFixed(1) + '% of all humanity.';
+  }
+  insight.innerHTML = text;
+
+  // Show card
+  var card = document.getElementById('country-card');
+  card.style.display = 'block';
+  void card.offsetWidth; // force reflow
+  card.classList.add('visible');
+  setTimeout(function() {
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+// ─── BACKGROUND PARTICLES ────────────────────────────────────────────────────
+var bgC = document.getElementById('bg'), bgX = bgC.getContext('2d');
+function resizeBg() { bgC.width = innerWidth; bgC.height = innerHeight; }
+resizeBg();
+addEventListener('resize', resizeBg);
+function Mote() {
+  this.x = Math.random() * bgC.width; this.y = Math.random() * bgC.height;
+  this.r = Math.random() * 2 + .4; this.vy = -(Math.random() * .35 + .08);
+  this.vx = (Math.random() - .5) * .25; this.ph = Math.random() * Math.PI * 2;
+  this.c = Math.random() > .5 ? '45,255,160' : '0,212,200';
+}
+Mote.prototype.update = function() {
+  this.y += this.vy; this.x += this.vx; this.ph += .018;
+  if (this.y < -8) { this.x = Math.random() * bgC.width; this.y = bgC.height + 8; this.r = Math.random() * 2 + .4; }
+};
+Mote.prototype.draw = function() {
+  var a = .15 + Math.sin(this.ph) * .2;
+  bgX.beginPath(); bgX.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+  bgX.fillStyle = 'rgba(' + this.c + ',' + a + ')';
+  bgX.shadowBlur = 6; bgX.shadowColor = 'rgba(' + this.c + ',.4)'; bgX.fill();
+};
+var motes = [];
+for (var i = 0; i < 80; i++) motes.push(new Mote());
+(function animBg() {
+  bgX.clearRect(0, 0, bgC.width, bgC.height);
+  motes.forEach(function(m) { m.update(); m.draw(); });
+  bgX.shadowBlur = 0;
+  requestAnimationFrame(animBg);
+})();
+
+// ─── SCROLL REVEAL ───────────────────────────────────────────────────────────
+var obs = new IntersectionObserver(function(es) {
+  es.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.05, rootMargin: '50px' });
+document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+setTimeout(function() {
+  document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('in'); });
+}, 1200);
+</script>
+</body>
+</html>
