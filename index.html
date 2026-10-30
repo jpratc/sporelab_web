@@ -275,7 +275,15 @@
       <span class="corner-glyph">03 ──</span>
       <h3>A family diary app</h3>
       <p>Android app to record, transcribe and organize family memories. Filter, search, chat and export them! </p>
-      <span style="display:inline-block;border:1px solid rgba(245,166,35,.4);color:var(--amber);padding:.35rem 1rem;font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;opacity:.85">◈ Coming Soon</span>
+      <div class="shots">
+        <img src="images/diary/01_home.webp" width="540" height="960" loading="lazy" alt="Family diary home screen with recent entries">
+        <img src="images/diary/04_qa.webp" width="540" height="960" loading="lazy" alt="Asking the diary what the family did last week">
+        <img src="images/diary/03_diary.webp" width="540" height="960" loading="lazy" alt="Diary list with search and date filter">
+      </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1rem">
+        <span style="display:inline-block;border:1px solid rgba(245,166,35,.4);color:var(--amber);padding:.35rem 1rem;font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;opacity:.85">◈ Coming Soon</span>
+        <a href="diary.html" class="btn-g" style="display:inline-block">See how it works →</a>
+      </div>
     </div>
     <div class="project-card reveal">
       <span class="corner-glyph">04 ──</span>
@@ -357,7 +365,7 @@ lb.addEventListener('click',function(){lb.classList.remove('open');});
 addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});
 
 // CONTACT FORM PREFILL (e.g. index.html?about=transcriptor#contact)
-var prefill={transcriptor:"Hi! I'd like to try the Voice message transcriptor app."};
+var prefill={transcriptor:"Hi! I'd like to try the Voice message transcriptor app.",diary:"Hi! I'd like to try the Family diary app."};
 var about=new URLSearchParams(location.search).get('about'),cMsg=document.querySelector('.contact-form textarea');
 if(cMsg&&prefill[about])cMsg.value=prefill[about];
 
