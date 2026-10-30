@@ -119,6 +119,15 @@
   .project-card:hover{border-color:rgba(45,255,160,.3);transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,.5)}
   .project-card h3{font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:.6rem;font-style:italic}
   .project-card p{font-size:.9rem;color:var(--muted);line-height:1.8;margin-bottom:1.2rem}
+  .shots{display:flex;justify-content:center;margin:1.8rem 0 2rem}
+  .shots img{width:150px;height:auto;border:1px solid var(--dim);box-shadow:0 14px 36px rgba(0,0,0,.6);cursor:zoom-in;transition:transform .35s,margin .35s}
+  .shots img:nth-child(1){transform:rotate(-6deg) translateY(10px);margin-right:-28px}
+  .shots img:nth-child(2){position:relative;z-index:1}
+  .shots img:nth-child(3){transform:rotate(6deg) translateY(10px);margin-left:-28px}
+  .shots:hover img{transform:none;margin:0 .4rem}
+  #lb{position:fixed;inset:0;z-index:400;background:rgba(5,8,10,.92);display:none;align-items:center;justify-content:center;cursor:zoom-out;padding:2rem}
+  #lb.open{display:flex}
+  #lb img{max-height:92vh;max-width:100%;border:1px solid var(--dim);box-shadow:var(--glow)}
   .corner-glyph{position:absolute;top:1.5rem;right:1.8rem;font-family:'Space Mono',monospace;font-size:.6rem;color:var(--dim);letter-spacing:.1em}
   .game-wrap{max-width:820px;margin:2.5rem auto 0;background:var(--bg2);border:1px solid var(--dim);padding:1.8rem;position:relative}
   .game-wrap::before{content:'';position:absolute;inset:-1px;pointer-events:none;background:linear-gradient(135deg,rgba(45,255,160,.08),transparent 50%,rgba(0,212,200,.06))}
@@ -152,7 +161,7 @@
   @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
-  @media(max-width:760px){nav ul{display:none} nav{padding:1rem 1.4rem} section{padding:5rem 1.4rem} .about-grid{grid-template-columns:1fr;gap:2.5rem} footer{flex-direction:column;text-align:center}}
+  @media(max-width:760px){nav ul{display:none} nav{padding:1rem 1.4rem} section{padding:5rem 1.4rem} .about-grid{grid-template-columns:1fr;gap:2.5rem} footer{flex-direction:column;text-align:center} .shots{overflow-x:auto;scroll-snap-type:x mandatory;justify-content:flex-start;gap:.8rem} .shots img,.shots img:nth-child(n){transform:none;margin:0;width:120px;flex:0 0 120px;scroll-snap-align:center}}
 </style>
 </head>
 <body>
@@ -252,7 +261,15 @@
       <span class="corner-glyph">02 ──</span>
       <h3>Voice message transcriptor</h3>
       <p>Simple Android app that transcribes voice recordings using the state-of-the-art Whisper model and re-writes it in clear sentences. Copy-paste it at the speed of light wherever you want!</p>
-      <span style="display:inline-block;border:1px solid rgba(245,166,35,.4);color:var(--amber);padding:.35rem 1rem;font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;opacity:.85">◈ Coming Soon</span>
+      <div class="shots">
+        <img src="images/transcriptor/01_idle.webp" width="540" height="960" loading="lazy" alt="Transcriptor home screen with record button">
+        <img src="images/transcriptor/03_done_raw.webp" width="540" height="960" loading="lazy" alt="Raw transcription rewritten into a clean checklist">
+        <img src="images/transcriptor/05_history.webp" width="540" height="960" loading="lazy" alt="History of past transcriptions">
+      </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1rem">
+        <span style="display:inline-block;border:1px solid rgba(245,166,35,.4);color:var(--amber);padding:.35rem 1rem;font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;opacity:.85">◈ Coming Soon</span>
+        <a href="transcriptor.html" class="btn-g" style="display:inline-block">See how it works →</a>
+      </div>
     </div>
     <div class="project-card reveal">
       <span class="corner-glyph">03 ──</span>
@@ -325,12 +342,25 @@
   </div>
 </section>
 
+<div id="lb" role="dialog" aria-modal="true" aria-label="Screenshot preview"><img alt=""></div>
+
 <footer>
   <div class="fl">SporeLab.xyz</div>
   <div class="fr">Built in Catalunya &nbsp;·&nbsp; <a href="#contact">Contact</a> &nbsp;·&nbsp; © 2026</div>
 </footer>
 
 <script>
+// SCREENSHOT LIGHTBOX
+var lb=document.getElementById('lb'),lbImg=lb.querySelector('img');
+document.querySelectorAll('.shots img').forEach(function(img){img.addEventListener('click',function(){lbImg.src=img.src;lbImg.alt=img.alt;lb.classList.add('open');});});
+lb.addEventListener('click',function(){lb.classList.remove('open');});
+addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});
+
+// CONTACT FORM PREFILL (e.g. index.html?about=transcriptor#contact)
+var prefill={transcriptor:"Hi! I'd like to try the Voice message transcriptor app."};
+var about=new URLSearchParams(location.search).get('about'),cMsg=document.querySelector('.contact-form textarea');
+if(cMsg&&prefill[about])cMsg.value=prefill[about];
+
 // CONTACT FORM (Formspree AJAX)
 var cForm=document.querySelector('.contact-form');
 if(cForm)cForm.addEventListener('submit',function(e){
